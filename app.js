@@ -48,4 +48,4 @@ app.get('/sendMail',async (req, res, next) => {
    }
 })
 
-app.listen(2000,() => console.log('Started server at 2000'));
+app.listen( process.env.PORT |2000,() => console.log('Started server at 2000'));
