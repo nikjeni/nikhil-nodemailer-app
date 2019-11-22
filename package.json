@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "googleapis": "^45.0.0",
     "mongoose": "^5.7.12",
     "nodemailer": "^6.3.1",
     "sendgrid": "^5.2.3"

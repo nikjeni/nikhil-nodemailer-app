@@ -1,42 +1,9 @@
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer');
-// var sendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
+const { google } = require('googleapis');
+const OAuth2 = google.auth.OAuth2;
 
-// var request = sendGrid.emptyRequest({
-//     method: 'POST',
-//     path: '/v3/mail/send',
-//     body: {
-//         personalizations: [
-//             {
-//                 to:[
-//                     {
-//                         email: 'gavalinikhil700@gmail.com'
-//                     }
-//                 ],
-//                 subject: 'Hello World robot 3.0'
-//             }
-//         ],
-//         from: {
-//             email: 'nikaka0792@gmail.com'
-//         },
-//         content:[
-//             {
-//                 type: 'text/plain',
-//                 value: 'Hello, Email!!'
-//             }
-//         ]
-//     }
-// });
-
-// sendGrid.API(request)
-// .then(response => {
-//     console.log(request.statusCode);
-//     console.log(request.body);
-//     console.log(request.headers);
-// }).catch((err) => {
-//     console.log(err.response.statusCode);
-// })
 
 var birthList = [
     {"name": "akshata k", "date": '11/22/2019', "email": "nikakshata@gmail.com","message":"Many more happy return of the day"},
@@ -58,31 +25,48 @@ console.log("todays date",today);
 
 app.get('/sendMail',async (req, res, next) => {
 
-   var user =  birthList.find(user => user.date === today);
+   var userData =  birthList.find(user => user.date === today);
 
-   if(user) {
-    let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-            user: process.env.SENDGRID_USERNAME,
-            pass: process.env.SENDGRID_PASSWORD
-        }
-    })
+   if(userData) {
     
-    let info = await transporter.sendMail({
-        from: '"Happy New Year 👻" <gavalinikhl700@gmail.com>', // sender address
-        to: `${user.email}`, // list of receivers
-        subject: "Happy new year ✔", // Subject line
-        text: `${user.message}`, // plain text body
-        html: "<b>`Hello world?`</b>" // html body
-    }).then(() => {
-        res.status(200).send('Mails are going to your friend list')
-    }).catch((err) => {
-        res.status(500).send(err);
-    })
+const oauth2Client = new OAuth2(
+    "258269955972-t17cpd0kdls16d7h4pbau5e8r4u47q5m.apps.googleusercontent.com",
+    "ka7cBXd12UfLO4nyRnCy_oob",
+    "https://developers.google.com/oauthplayground"
+)
+
+oauth2Client.setCredentials({
+    refresh_token : "1//049fLkRJc5WYTCgYIARAAGAQSNwF-L9IrxXQ9mABWZE6f2XGrRnhCzexQazexdizSeqJsa9S9VJmK1LmziYIOzrw_0HyhDY4BXVQ"
+});
+
+const accessToken = oauth2Client.getAccessToken();
+
+const smtpTransport = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        type: "OAuth2",
+        user: "gavalinikhil700@gmail.com",
+        clientId: "258269955972-t17cpd0kdls16d7h4pbau5e8r4u47q5m.apps.googleusercontent.com",
+        clientSecret: "ka7cBXd12UfLO4nyRnCy_oob",
+        refreshToken: "1//049fLkRJc5WYTCgYIARAAGAQSNwF-L9IrxXQ9mABWZE6f2XGrRnhCzexQazexdizSeqJsa9S9VJmK1LmziYIOzrw_0HyhDY4BXVQ",
+        accessToken: accessToken
+    }
+})
+
+const mailOptions = {
+    from: "gavalinikhil700@gmail.com",
+     to: `${userData.email}`,
+     subject: "Node.js Email with Secure OAuth",
+     generateTextFromHTML: true,
+     html: "<b>test</b>"
+}
+
+smtpTransport.sendMail(mailOptions, (error, response) => {
+    error? console.log(error): console.log(response);
+    smtpTransport.close();
+})
+
    }
 })
 
-app.listen( process.env.PORT, '0.0.0.0' |2000,() => console.log('Started server at 2000'));
+app.listen( process.env.PORT, '0.0.0.0' | 2000,() => console.log('Started server at 2000'));
