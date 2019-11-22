@@ -62,7 +62,11 @@ const mailOptions = {
 }
 
 smtpTransport.sendMail(mailOptions, (error, response) => {
-    error? console.log(error): console.log(response);
+    if(error){
+        res.status(500).send(error)
+    } else{
+        res.status(200).send("Mails are sent to your friends");
+    }
     smtpTransport.close();
 })
 
