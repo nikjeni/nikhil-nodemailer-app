@@ -4,7 +4,8 @@ const userSchema = mongoose.Schema({
     contact: String,
     email: String,
     message: String,
-    city: String
+    city: String,
+    dob: String
 });
 
 
