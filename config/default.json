@@ -1,0 +1,15 @@
+{
+    "serverCredentials": {
+        "dbConfig":{
+            "host":"mongodb://nik:nik123@ds117545.mlab.com:17545/nikhilapp"
+        },
+        "googleCredentials":{
+            "type":"OAuth2",
+            "user":"gavalinikhil700@gmail.com",
+            "clientId": "258269955972-t17cpd0kdls16d7h4pbau5e8r4u47q5m.apps.googleusercontent.com",
+            "clientSecret": "ka7cBXd12UfLO4nyRnCy_oob",
+            "refreshToken": "1//049fLkRJc5WYTCgYIARAAGAQSNwF-L9IrxXQ9mABWZE6f2XGrRnhCzexQazexdizSeqJsa9S9VJmK1LmziYIOzrw_0HyhDY4BXVQ",
+            "googlePlayground": "https://developers.google.com/oauthplayground"
+        }
+    }
+}

@@ -3,7 +3,8 @@ const { date } = require('../utils/date');
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
-
+const config = require('config');
+const serverCredentials = config.get("serverCredentials");
 
 var birthList = [
     {"name": "akshata k", "date": '11/22/2019', "email": "nikakshata@gmail.com","message":"Many more happy return of the day"},
@@ -30,13 +31,12 @@ module.exports.sendMail = async (req, res, next) => {
     const userData = await UserModel.find();
     userData.forEach((val,index) => {
         if(val.dob.split("/")[0] == date.getCurrentMonth() && val.dob.split("/")[1] == date.getTodassDate()) {
-        const oauth2Client = new OAuth2(
-     "258269955972-t17cpd0kdls16d7h4pbau5e8r4u47q5m.apps.googleusercontent.com",
-     "ka7cBXd12UfLO4nyRnCy_oob",
-     "https://developers.google.com/oauthplayground")
+        const oauth2Client = new OAuth2(serverCredentials.googleCredentials.clientId, 
+                                        serverCredentials.googleCredentials.clientSecret,
+                                        serverCredentials.googleCredentials.googlePlayground)
  
  oauth2Client.setCredentials({
-     refresh_token : "1//049fLkRJc5WYTCgYIARAAGAQSNwF-L9IrxXQ9mABWZE6f2XGrRnhCzexQazexdizSeqJsa9S9VJmK1LmziYIOzrw_0HyhDY4BXVQ"
+     refresh_token : serverCredentials.googleCredentials.refreshToken
  });
  
  const accessToken = oauth2Client.getAccessToken();
@@ -44,17 +44,17 @@ module.exports.sendMail = async (req, res, next) => {
  const smtpTransport = nodemailer.createTransport({
      service: "gmail",
      auth: {
-         type: "OAuth2",
-         user: "gavalinikhil700@gmail.com",
-         clientId: "258269955972-t17cpd0kdls16d7h4pbau5e8r4u47q5m.apps.googleusercontent.com",
-         clientSecret: "ka7cBXd12UfLO4nyRnCy_oob",
-         refreshToken: "1//049fLkRJc5WYTCgYIARAAGAQSNwF-L9IrxXQ9mABWZE6f2XGrRnhCzexQazexdizSeqJsa9S9VJmK1LmziYIOzrw_0HyhDY4BXVQ",
+         type: serverCredentials.googleCredentials.type,
+         user: serverCredentials.googleCredentials.user,
+         clientId: serverCredentials.googleCredentials.clientId,
+         clientSecret: serverCredentials.googleCredentials.clientSecret,
+         refreshToken: serverCredentials.googleCredentials.refreshToken,
          accessToken: accessToken
      }
  })
 
  const mailOptions = {
-     from: "gavalinikhil700@gmail.com",
+     from: serverCredentials.googleCredentials.user,
       to: `${val.email}`,
       subject: "Node.js Email with Secure OAuth",
       generateTextFromHTML: true,
@@ -69,9 +69,6 @@ module.exports.sendMail = async (req, res, next) => {
      }
      smtpTransport.close();
  })
-        }
-        else{
-            return res.status(500).send("Records are not found");
         }
     });
     }catch(err){

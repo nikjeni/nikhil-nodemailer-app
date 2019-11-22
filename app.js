@@ -8,4 +8,4 @@ app.use(bodyParser.json());
 app.use(db);
 app.use('/user',userRouter);
 
-app.listen(process.env.PORT, '0.0.0.0' | 2000,() => console.log('Started server at 2000'));
+app.listen(2000,() => console.log('Started server at 2000'));
